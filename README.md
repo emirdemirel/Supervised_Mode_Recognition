@@ -9,7 +9,7 @@
    #### The first notebook shows the steps of Chroma Feature Extraction from an audio collection.
    #### The second notebook includes the manual Feature Selection step and the whole Pipeline of the Machine Learning process for Audio Classification based on 'Modality'.
     
-   #### PARAMETERS:",
+   #### PARAMETERS:
    - numBins(int) : Number of bins in the Chroma Vectors. This is parametrized in consideration of possible microtonalities existing in non-Western music traditions (12,24,36,48, ...)\n",
    - modality(str) : Name of the modality type specific for the music tradition.\n",
          Classical Western Music / Jazz : Mode, chord-scale",
