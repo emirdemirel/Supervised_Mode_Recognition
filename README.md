@@ -1,8 +1,8 @@
 # Supervised_Modality_Classification
 
-"# AUDIO CLASSIFICATION BASED ON 'MODALITY' USING CHROMA FEATURES\n",
-    "\n",
-"#### This series of notebooks demonstrate a tutorial for classifying audio files based on the tonal concept of 'modality in music'. The concept of 'modality' exists in various tonal music traditions around the world. In this tutorial, we apply supervised learning based on chroma features.\n",
+# AUDIO CLASSIFICATION BASED ON 'MODALITY' USING CHROMA FEATURES\n",
+    \n,
+#### This series of notebooks demonstrate a tutorial for classifying audio files based on the tonal concept of 'modality in music'. The concept of 'modality' exists in various tonal music traditions around the world. In this tutorial, we apply supervised learning based on chroma features.\n",
     "\n",
     "There are 2 main steps for the audio classification: Feature Extraction and Classification. \n",
     "---\n",
