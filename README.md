@@ -13,10 +13,10 @@
    - numBins(int) : Number of bins in the Chroma Vectors. This is parametrized in consideration of possible microtonalities existing in non-Western music traditions (12,24,36,48, ...)",
    - modality(str) : Name of the modality type specific for the music tradition.",
    
-         Classical Western Music / Jazz : Mode, chord-scale",
+         Classical Western Music / Jazz : Mode, chord-scale,
          
-         Classical Turkish Music : Makam",
+         Classical Turkish Music : Makam,
          
-         Classical North Indian Music : Rag, Raaga",
+         Classical North Indian Music : Rag, Raaga,
          
          Classical Arab-Andalusian Music : Tab",
