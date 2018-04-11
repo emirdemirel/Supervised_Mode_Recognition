@@ -20,3 +20,13 @@
          Classical North Indian Music : Rag, Raaga
          
          Classical Arab-Andalusian Music : Tab
+
+## DEPENDENCIES : 
+
+    - Scipy, numpy, matplotlib, sci-kit learn, pandas,csv, pickle
+
+    - Essentia
+    
+    
+ 
+   
