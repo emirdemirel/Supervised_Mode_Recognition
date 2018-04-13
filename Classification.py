@@ -18,11 +18,11 @@ def main(filename, region, mode):
     df.pop('name'); dataclass=df.pop(modeType)
     X=df; Y=dataclass
     modalitySet = set(Y)
-    print(modalitySet)
-    cm,acc,f = machineLearning(dataDir,X,Y,attribute,numBins)
-        
     
+    cm,acc,f = machineLearning(dataDir,X,Y,attribute,numBins)
+
     modalitySet = sorted(modalitySet)
+    print(modalitySet)
     plot_confusion_matrix(cm,modalitySet,normalize=False)
     
     
