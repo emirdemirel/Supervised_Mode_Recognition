@@ -1,4 +1,4 @@
-# Supervised_Modality_Classification
+# Supervised_Mode_Recognition
 
 # AUDIO CLASSIFICATION BASED ON 'MODALITY' USING CHROMA FEATURES"
     
