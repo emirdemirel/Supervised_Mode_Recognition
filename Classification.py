@@ -17,13 +17,13 @@ def main(filename, region, mode):
     df = pd.read_csv(os.path.join(dataDir,filename))
     df.pop('name'); dataclass=df.pop(modeType)
     X=df; Y=dataclass
+    modalitySet = set(Y)
+    print(modalitySet)
     cm,acc,f = machineLearning(dataDir,X,Y,attribute,numBins)
         
-    list_accuracy.append([cm,acc])
-
-    best_model = max(enumerate(list_accuracy))[1]
+    
     modalitySet = sorted(modalitySet)
-    plot_confusion_matrix(best_model[0],modalitySet,normalize=False)
+    plot_confusion_matrix(cm,modalitySet,normalize=False)
     
     
 if __name__ == "__main__":
