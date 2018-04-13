@@ -1,61 +1,59 @@
-import json, os, sys, pickle, csv
-import modalityUtils as mu
-import argparse
+import json, os, sys
+from modeUtils.utilities import *
 
-
-####################################################################################################
 ### MAIN FUNCTION ###
 
-MusicTradition, numBins, outputDir = mu.get_args()
+def main(MusicTradition, numBins, dataDir):
+    
+    if MusicTradition == 'TurkishClassicalMusic':
 
-if MusicTradition == 'TurkishClassicalMusic':
-    
-    ### THE MODALITY CONCEPT IN TURKISH CLASSICAL MUSIC TRADITION
-    modality = 'makam'
-    
-    ### dataDir :THE DIRECTORY OF THE AUDIO FILES
-    dataDir = '../data/compMusicDatasets/turkishMakam/'
-    annotationsFile = 'annotations.json'
-    
-elif MusicTradition == 'HindustaniClassicalMusic':
-    
-    ### THE MODALITY CONCEPT IN HINDUSTANI CLASSICAL MUSIC TRADITION
-    modality = 'rag'
-        
-elif MusicTradition == 'CarnaticClassicalMusic':
-    
-    ### THE MODALITY CONCEPT IN CARNATIC CLASSICAL MUSIC TRADITION
-    modality = 'raaga'    
-    
-elif MusicTradition == 'Jazz':
-    
-    ### THE MODALITY CONCEPT IN JAZZ TRADITION
-    modality = 'chordscale'
-    
-elif MusicTradition == 'ArabAndalusianMusic':
-    
-    ### THE MODALITY CONCEPT IN ARAB-ANDALUSIAN MUSIC TRADITION
-    modality = 'tab'   
-    annotationsFile = 'dataset_77_tab_tonic.json'
-    ### dataDir :THE DIRECTORY OF THE AUDIO FILES
+        ### THE MODALITY CONCEPT IN TURKISH CLASSICAL MUSIC TRADITION
+        modality = 'makam'
+     
+        annotationsFile = 'annotations.json'
 
-    dataDir = '../andalusian-corpora-notebooks/'
-    
-print('Analysis on '+ MusicTradition + ' Tradition.\n')
-print('Number of bins per octave in the Chroma Vectors : ' + str(numBins))
+    elif MusicTradition == 'HindustaniClassicalMusic':
 
-'''   
-### LOAD THE JSON FILE THAT HAS THE ANNOTATIONS AND MBIDS
-with open(dataDir + annotationsFile) as json_data:
-    collectionFiles = json.load(json_data)
+        ### THE MODALITY CONCEPT IN HINDUSTANI CLASSICAL MUSIC TRADITION
+        modality = 'rag'
 
-dataList, modalityCategories = mu.createDataStructure(dataDir, collectionFiles, numBins, modality)
+    elif MusicTradition == 'CarnaticClassicalMusic':
 
-print('Modality categories in the dataset : \n')
-print(modalityCategories, '\n')
+        ### THE MODALITY CONCEPT IN CARNATIC CLASSICAL MUSIC TRADITION
+        modality = 'raaga'    
 
-print('Number of Categories in the dataset')
-print(len(modalityCategories))
+    elif MusicTradition == 'Jazz':
+
+        ### THE MODALITY CONCEPT IN JAZZ TRADITION
+        modality = 'chordscale'
+
+    elif MusicTradition == 'ArabAndalusianMusic':
+
+        ### THE MODALITY CONCEPT IN ARAB-ANDALUSIAN MUSIC TRADITION
+        modality = 'tab'   
+        annotationsFile = 'dataset_77_tab_tonic.json'
+        ### dataDir :THE DIRECTORY OF THE AUDIO FILES
+
+    print('Analysis on '+ MusicTradition + ' Tradition.\n')
+    print('Number of bins per octave in the Chroma Vectors : ' + str(numBins))
       
-dataslist = mu.FeatureExtraction(outputDir,dataDir,dataList,modality)
-'''
+    ### LOAD THE JSON FILE THAT HAS THE ANNOTATIONS AND MBIDS
+    with open(dataDir + annotationsFile) as json_data:
+        collectionFiles = json.load(json_data)
+
+    dataList, modalityCategories = createDataStructure(dataDir, collectionFiles, numBins, modality)
+    
+    print('Modality categories in the dataset : \n')
+    print(modalityCategories, '\n')
+
+    print('Number of Categories in the dataset')
+    print(len(modalityCategories))
+    
+    dataslist = FeatureExtraction(outputDir,dataDir,dataList,modality)
+    
+#####################################################
+    
+if __name__ == "__main__":
+    
+    MusicTradition, numBins, outputDir = get_args_FeatureExtraction()
+    main(MusicTradition, numBins, outputDir)
