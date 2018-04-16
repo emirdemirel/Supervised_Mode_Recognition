@@ -178,11 +178,17 @@ def createDataStructure(dataDir,collectionFiles,numBins,mode):
     for index in range(len(collectionFiles)):            
         filename = collectionFiles[index]['mbid'].split('recording/')[1]
         fileData = initiateData4File(filename,dataDir)    
-        fileData['tonic'] = collectionFiles[index]['tonic']
-        fileData['mode'] = collectionFiles[index]['mode']
-        fileData['path'] = fileData['path']+fileData['mode']+'/'
+        fileData['tonic'] = collectionFiles[index]['tonic']                
+        
         fileData['numBins']=numBins
+        
+        if '/' in collectionFiles[index]['mode']:       #### for the case when there exists two different names for the same mode type            
+            fileData['mode'] = collectionFiles[index]['mode'].split('/')[1]            
+        else:
+            fileData['mode'] = collectionFiles[index]['mode']
             
+        fileData['path'] = fileData['path']+fileData['mode']+'/'
+        
         modeCategories.append(fileData['mode'])
         dataList.append(fileData)
     '''
