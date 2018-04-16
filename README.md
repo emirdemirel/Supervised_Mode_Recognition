@@ -10,7 +10,8 @@
   ---------
   In order to use the tools and notebooks, you need to install 'docker' . Docker provides a virtual environment with all the desired dependencies and libraries already installed. In this toolbox for 'Chroma-based Supervised Mode Recognition in Multi-cultural Context', we have used the tools in 'MIR-Toolbox' which contains a set of tools installed and compiled, including 'Essentia' for several Music Information Retrieval applications. For more information regarding toolbox, please refer to https://github.com/MTG/MIR-toolbox-docker  :
   
-   1) Install docker 
+   1) Install docker-compose
+   Follow [instructions](https://docs.docker.com/compose/install/).
 
    #### Windows
     https://docs.docker.com/docker-for-windows/install/
@@ -20,9 +21,6 @@
 
    #### Ubuntu
     https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce
-
-   ### Install docker-compose
-   Follow [instructions](https://docs.docker.com/compose/install/).
 
 
    2) Clone the repository into target directory.
