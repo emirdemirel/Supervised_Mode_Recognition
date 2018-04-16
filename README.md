@@ -27,12 +27,14 @@
    
     git clone https://github.com/emirdemirel/Supervised_Mode_Recognition.git
     
-   3) Initiate the docker image using following command.
+   3) Initiate the docker image using following command. You may need to access with superuser permission.
    
      docker-compose up
      
+   Then access localhost:8888 on your browser and when asked for a password use 'mir'.
      
-    
+   4) Open the Jupyter notebook  'Chroma-based_ModeRecognition_in_Multi-culturalContext.ipynb' for the implementation of the work presented in paper [1].
+
 
    
    Authors
