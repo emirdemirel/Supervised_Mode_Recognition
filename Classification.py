@@ -6,7 +6,13 @@ warnings.filterwarnings("ignore")
 
 def main(filename, region, mode):
     
-    dataDir = 'data/'   
+    if mode == 'Makam':
+        dataDir = 'data/Turkish/'
+    elif mode == 'Rag':
+        dataDir = 'data/Hindustani/'
+    elif mode == 'Raaga':
+        dataDir = 'data/Carnatic/'  
+        
     numBins = filename.split('_')[1].split('bins')[0]
     attribute = filename.split('bins_')[1].split('.')[0]    
     modeType = mode + 'Type' 
@@ -17,13 +23,13 @@ def main(filename, region, mode):
     df = pd.read_csv(os.path.join(dataDir,filename))
     df.pop('name'); dataclass=df.pop(modeType)
     X=df; Y=dataclass
-    modalitySet = set(Y)
+    modeSet = set(Y)
     
     cm,acc,f = machineLearning(dataDir,X,Y,attribute,numBins)
 
-    modalitySet = sorted(modalitySet)
-    print(modalitySet)
-    plot_confusion_matrix(cm,modalitySet,normalize=False)
+    modeSet = sorted(modeSet)
+    print(modeSet)
+    plot_confusion_matrix(cm,modeSet,normalize=False)
     
     
 if __name__ == "__main__":
