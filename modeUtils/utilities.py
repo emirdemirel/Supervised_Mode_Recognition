@@ -14,7 +14,7 @@ from sklearn.metrics import confusion_matrix, f1_score,accuracy_score
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-
+import IPython.display as ipd
 from compmusic import dunya
 import essentia
 essentia.log.warningActive=False
@@ -25,7 +25,7 @@ def get_args_FeatureExtraction():
     parser = argparse.ArgumentParser(
         description='A tool for Chroma (HPCP) Feature Extraction using Essentia library. (FEATURE EXTRACTION)')
     parser.add_argument(
-        '-t', '--tradition', type=str ,help='Input music tradition to perform the modality classification task', action = 'store', required = True)
+        '-t', '--tradition', type=str ,help='Input music tradition to perform the mode classification task', action = 'store', required = True)
     parser.add_argument(
         '-n', '--numberofBins', type = int, help='Input number of bins per octave in chroma vectors', required = True, action='store')
     parser.add_argument(
@@ -80,7 +80,7 @@ def get_args_Classification():
 
 def downloadDataset(annotationsFile, dataDir):
     '''
-    annotationsFile (.json) = JSON file with tonic and modality annotations, and recording mbids
+    annotationsFile (.json) = JSON file with tonic and mode annotations, and recording mbids
     targetDir (str) = target output directory for the dataset
     '''
 
@@ -89,26 +89,31 @@ def downloadDataset(annotationsFile, dataDir):
     
     with open(dataDir+annotationsFile) as json_data: ##ninemakams.json is specific for the case
         collectionFiles = json.load(json_data)
-        
-    makams=set()
+    #print(collectionFiles)    
+    modes=set()
     for file in collectionFiles:
-        makams.add(file['makam'])
+        if '/' in file['mode']:                     #### for the case when there exists two different names for the same mode type            
+            file['mode'] = file['mode'].split('/')[1]
+            modes.add(file['mode'])
+        else:
+            modes.add(file['mode'])
+    print(modes)       
     #Create directories for makams and download one recording for each
-    for makam in makams:
-        if os.path.exists(dataDir+makam)!=1:         #In case of the directory already exists
-            os.mkdir(dataDir+makam)
+    for mode in modes:
+        if os.path.exists(dataDir+mode)!=1:         #In case of the directory already exists
+            os.mkdir(dataDir+mode)
         for file in collectionFiles:
-            if(file['makam']==makam):
-                musicbrainzid=file['mbid'].split('http://musicbrainz.org/recording/')[-1]
+            if(file['mode']==mode):
+                musicbrainzid=file['mbid'].split('https://musicbrainz.org/recording/')[-1]
                 fileset = []
-                for file in set(os.listdir(dataDir+makam)):
+                for file in set(os.listdir(dataDir+mode)):
                     fileset.append(file.split('.')[0])
                 fileset=set(fileset)
                 print('Downloading recording : ')
                 if not musicbrainzid in fileset:
                     contents = dunya.docserver.get_mp3(musicbrainzid)
                     name = "%s.mp3" % (musicbrainzid)
-                    path = os.path.join(dataDir+makam+'/', name)
+                    path = os.path.join(dataDir+mode+'/', name)
                     print(name)
                     open(path, "wb").write(contents)            
 
@@ -165,25 +170,23 @@ def getRecordingMetaData(mbid):
 
     return title, artist
 
-def createDataStructure(dataDir,collectionFiles,numBins,modality):
+def createDataStructure(dataDir,collectionFiles,numBins,mode):
     
-    modalityCategories = []    
+    modeCategories = []    
     dataList = []
-    
-    if modality == 'makam':
-    
-        for index in range(len(collectionFiles)):            
-            filename = collectionFiles[index]['mbid'].split('recording/')[1]
-            fileData = initiateData4File(filename,dataDir)    
-            fileData['tonic'] = collectionFiles[index]['tonic']
-            fileData[modality] = collectionFiles[index][modality]
-            fileData['path'] = fileData['path']+fileData[modality]+'/'
-            fileData['numBins']=numBins
             
-            modalityCategories.append(fileData[modality])
-            dataList.append(fileData)
-    
-    if modality == 'tab':
+    for index in range(len(collectionFiles)):            
+        filename = collectionFiles[index]['mbid'].split('recording/')[1]
+        fileData = initiateData4File(filename,dataDir)    
+        fileData['tonic'] = collectionFiles[index]['tonic']
+        fileData['mode'] = collectionFiles[index]['mode']
+        fileData['path'] = fileData['path']+fileData['mode']+'/'
+        fileData['numBins']=numBins
+            
+        modeCategories.append(fileData['mode'])
+        dataList.append(fileData)
+    '''
+    if mode == 'tab':
         
         for index in range(len(collectionFiles)):
                 
@@ -195,15 +198,15 @@ def createDataStructure(dataDir,collectionFiles,numBins,modality):
             fileData['section'] = []
             for section in collectionFiles[index]['section']:
                 fileData['section'].append(section)
-                modalityCategories.append(section[modality]) 
+                modeCategories.append(section['mode']) 
             fileData['path'] = fileData['path']
             fileData['numBins']=numBins  
             
             dataList.append(fileData)
+    '''
+    modeCategories = set(modeCategories)
     
-    modalityCategories = set(modalityCategories)
-    
-    return dataList, modalityCategories
+    return dataList, modeCategories
 
 ############# FEATURE EXTRACTION FUNCTIONS ###########
 
@@ -223,7 +226,7 @@ def computeHPCP(x, windowSize, hopSize, params, tonic, numBin):
 
     return hpcp
 
-def computeHPCPFeatures(fileData, params, numBin,modality): ###change name!!!!!!!!!
+def computeHPCPFeatures(fileData, params, numBin,mode): ###change name!!!!!!!!!
     # Reading the wave file
     fs = params.fs
 
@@ -237,12 +240,13 @@ def computeHPCPFeatures(fileData, params, numBin,modality): ###change name!!!!!!
     hopSize = int(hopSize / 2) * 2  # assuring hopSize is even
     #print(len(x)/fs) #duration
     
-    if modality == 'makam':
-        tonic = fileData['tonic']
-        HPCPs = computeHPCP(x, windowSize, hopSize, params, tonic, numBin)
-        fileData['hpcp'] = np.array(HPCPs)
-        
-    elif modality == 'tab':
+    
+    tonic = fileData['tonic']
+    HPCPs = computeHPCP(x, windowSize, hopSize, params, tonic, numBin)
+    fileData['hpcp'] = np.array(HPCPs)
+    
+    '''    
+    elif mode == 'tab':
         for section in fileData['section']:
             startSample = section['start_time']*fs
             endSample = section['end_time']*fs
@@ -250,7 +254,8 @@ def computeHPCPFeatures(fileData, params, numBin,modality): ###change name!!!!!!
             tonic = section['tonic']
             HPCPs = computeHPCP(x, windowSize, hopSize, params, tonic, numBin)
             section['hpcp'] = np.array(HPCPs)
-
+    '''
+    
 def computeGlobHPCP(fileData,numBins):    
     '''
     INPUT :
@@ -273,65 +278,37 @@ def computeGlobHPCP(fileData,numBins):
         fileData['mean_hpcp_vector'].append(np.mean(hpcps))
         fileData['std_hpcp_vector'].append(np.std(hpcps))
               
-def FeatureExtraction(dataDir,outDir,dataList, modality):
+def FeatureExtraction(dataDir,outDir,dataList, mode):
     
     params = AnalysisParams(200,100,'hann',2048,44100)
     numBins = dataList[0]['numBins']
     i = 1
     fs = params.fs
     print('Feature Extraction in Process. This might take a while...')    
-    if modality == 'makam':        
-        for ind in range(len(dataList)):
-
-            if dataList[ind][modality]!=dataList[ind-1][modality]:
-                    print('extracting Features for modality : ',dataList[ind][modality])  
-            songname = dataList[ind]['mbid']  
-            dataList[ind]['fileName'] = songname+'.mp3'
            
-            computeHPCPFeatures(dataList[ind],params,numBins,modality)
-            computeGlobHPCP(dataList[ind],numBins,region)
-      
-    if modality == 'makam':        
-        for ind in range(len(dataList)):
-
-            if dataList[ind][modality]!=dataList[ind-1][modality]:
-                    print('extracting Features for modality : ',dataList[ind][modality])  
-            songname = dataList[ind]['mbid']  
-            dataList[ind]['fileName'] = songname+'.mp3'
+    for ind in range(len(dataList)):
+        if dataList[ind]['mode']!=dataList[ind-1]['mode']:
+            print('extracting Features for ' + mode +' : ',dataList[ind]['mode'])  
+        songname = dataList[ind]['mbid']  
+        dataList[ind]['fileName'] = songname+'.mp3'
            
-            computeHPCPFeatures(dataList[ind],params,numBins,modality)
-            computeGlobHPCP(dataList[ind],numBins)
-
-            print('Track ',i)
-            i = i + 1
-    
-    if modality == 'tab':        
+        computeHPCPFeatures(dataList[ind],params,numBins,mode)
+        computeGlobHPCP(dataList[ind],numBins)
+    '''
+    if mode == 'tab':        
         for ind in range(len(dataList)):            
             songname = dataList[ind]['mbid']  
             dataList[ind]['fileName'] = songname+'.mp3'
-            computeHPCPFeatures(dataList[ind],params,numBins,modality)
+            computeHPCPFeatures(dataList[ind],params,numBins,mode)
             for section in dataList[ind]['section']:
                 computeGlobHPCP(section,numBins)         
                 print('Section ',i)
                 i = i + 1
-                
-    ### Saving all results in a pickle file
-            print('Track ',i)
-            i = i + 1
+    '''
     
-    if modality == 'tab':        
-        for ind in range(len(dataList)):            
-            songname = dataList[ind]['mbid']  
-            dataList[ind]['fileName'] = songname+'.mp3'
-            computeHPCPFeatures(dataList[ind],params,numBins,modality)
-            for section in dataList[ind]['section']:
-                computeGlobHPCP(section,numBins)         
-                print('Section ',i)
-                i = i + 1
-                
     ### Saving all results in a pickle file
     pickleProtocol=1 #choosen for backward compatibility
-    with open(outDir+'extractedFeatures_for'+modality+'tradition('+str(numBins)+'bins).pkl' , 'wb') as f:
+    with open(outDir+'extractedFeatures_for'+mode+'tradition('+str(numBins)+'bins).pkl' , 'wb') as f:
         pickle.dump(dataList, f, pickleProtocol)
     print('Features are extracted and saved in a pickle file located in '+outDir+' directory')
     
@@ -363,7 +340,7 @@ def computeHPCP_Regional(fileData, region):
 
 ############# DATA HANDLING FOR CLASSIFICATION STEP ###################
         
-def readDataset(dataDir,filename, modality, region):
+def readDataset(dataDir,filename, mode, region):
     
     '''
     INPUT:
@@ -372,7 +349,7 @@ def readDataset(dataDir,filename, modality, region):
     
     filename(str) : Name of the Pickle file which contains the features and ground truth
     
-    modality (str) : Modality type present in the music tradition of analysis
+    mode (str) : mode type present in the music tradition of analysis
     
     region (float) : The first 'x' portion of songs to be analyzed. Default = 0.3
     
@@ -382,22 +359,22 @@ def readDataset(dataDir,filename, modality, region):
     
     dataList (list of dicts) : The data structure which has all the necessary information for automatic classification
     
-    modalitySet (set) : List of 
+    modeSet (set) : List of 
     
     '''
     
     with open(os.path.join(dataDir,filename) , 'rb') as f:
         dataFiles = pickle.load(f)  # !!!!!!!!!!!!!
 
-    modalitySet = []
+    modeSet = []
     dataList = [];
     
-    if modality == 'makam':
+    if mode == 'Makam' or mode == 'Rag' or mode == 'Raaga':
     
         for datafile in dataFiles:  # control for empty dataStructures (files with no HPCP)
             if len(datafile['hpcp']) != 0:
                 dataList.append(datafile)
-                modalitySet.append(datafile[modality])
+                modeSet.append(datafile['mode'])
                 
         params = AnalysisParams(200, 100, 'hann', 2048, 44100)     
         
@@ -406,18 +383,18 @@ def readDataset(dataDir,filename, modality, region):
             
         print('computing Local Features for the first' + str(region) + 'region of the audio files is COMPLETE \n')
             
-    if modality == 'tab':
+    elif mode == 'Tab':
         for datafile in dataFiles:
             for section in datafile['section']:
                 dataList.append(datafile)
-                modalitySet.append(section[modality])
+                modeSet.append(section['mode'])
                         
-    modalitySet = set(modalitySet)        
+    modeSet = set(modeSet)        
     
-    return dataList, modalitySet
+    return dataList, modeSet
 
 
-def generateCSV(targetDir, data, region, modality, combined):
+def generateCSV(targetDir, data, region, mode, combined):
     '''
     INPUT : 
     
@@ -427,7 +404,7 @@ def generateCSV(targetDir, data, region, modality, combined):
     
     region (float) : The first 'x' portion of songs to be analyzed. Default = 0.3 (ONLY APPLICABLE FOR MAKAM TRADITION)
     
-    modality (str) : Modality type present in the music tradition of analysis
+    mode (str) : mode type present in the music tradition of analysis
     
     combined (boolean) : Perform classification using the combination of local and global features. (ONLY APPLICABLE FOR MAKAM TRADITION)
     
@@ -436,10 +413,10 @@ def generateCSV(targetDir, data, region, modality, combined):
     CSV file with the proper format for MachineLearning steps
     
     '''
-
+    
     numBin = data[0]['numBins'] ### TODO - writer better, fileData[numbin]
     
-    if modality == 'makam':
+    if mode == 'Makam' or mode == 'Rag' or mode == 'Raaga':
     
         if combined == False :
             
@@ -454,8 +431,8 @@ def generateCSV(targetDir, data, region, modality, combined):
                     for i in range(numBin):
                         ind = str(i)
                         fieldnames.append('hpcp_std_' + ind)
-                modalityType = modality + 'Type'        
-                fieldnames.append(modalityType)
+                modeType = mode + 'Type'        
+                fieldnames.append(modeType)
 
                 datasList = []
                 datasList.append(fieldnames)
@@ -470,7 +447,7 @@ def generateCSV(targetDir, data, region, modality, combined):
                         for i in range(numBin):
                             tempList.append(data[index]['std_hpcp_vector'][i])
 
-                    tempList.append(data[index][modality])  # append modality types for classification  
+                    tempList.append(data[index]['mode'])  # append mode types for classification  
                     datasList.append(tempList)
 
                 with open(targetDir + 'DataCSVforstage' + '_' + str(numBin) + 'bins_' + featureSet + '.csv',
@@ -498,7 +475,9 @@ def generateCSV(targetDir, data, region, modality, combined):
                     ind = str(i)
                     fieldnames.append('hpcpstd_' + ind)
 
-                fieldnames.append('makamType')
+                modeType = mode + 'Type'        
+                fieldnames.append(modeType)
+                
                 datasList = []
                 datasList.append(fieldnames)
 
@@ -531,7 +510,7 @@ def generateCSV(targetDir, data, region, modality, combined):
                         for i in range(len(data[0]['std_hpcp_vector'])):
                             tempList.append(data[index]['std_hpcp_vector'][i])
 
-                    tempList.append(data[index][modality])  # append scales for classification
+                    tempList.append(data[index]['mode'])  # append scales for classification
 
                     datasList.append(tempList)
                 with open(targetDir + 'DataCSVforstage' + '_' + str(numBin) + 'bins_' + iteration + '.csv',
@@ -542,7 +521,7 @@ def generateCSV(targetDir, data, region, modality, combined):
                 print('Generating CSV file for the features ' + iteration + ' is COMPLETE')
             
             
-    elif modality == 'tab' : 
+    elif mode == 'Tab' : 
         
         fieldnames = ['name']
         if featureSet == 'mean' or featureSet == 'all':
@@ -553,8 +532,8 @@ def generateCSV(targetDir, data, region, modality, combined):
             for i in range(numBin):
                 ind = str(i)
                 fieldnames.append('hpcp_std_' + ind)
-        modalityType = modality + 'Type'        
-        fieldnames.append(modalityType)
+        modeType = mode + 'Type'        
+        fieldnames.append(modeType)
 
         datasList = []
         datasList.append(fieldnames)
@@ -571,7 +550,7 @@ def generateCSV(targetDir, data, region, modality, combined):
                     for i in range(numBin):
                         tempList.append(section['std_hpcp_vector'][i])
 
-                tempList.append(section[modality])  # append modality types for classification  
+                tempList.append(section['mode'])  # append mode types for classification  
                 datasList.append(tempList)
 
         with open(targetDir + 'DataCSVforstage' + '_' + str(numBin) + 'bins_' + featureSet + '.csv','w') as csvfile:
