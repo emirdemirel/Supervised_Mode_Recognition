@@ -40,5 +40,9 @@
    Emir Demirel
    emir.demirel@upf.edu
     
- 
+ <a name="references"></a>References
+-------
+
+ [1] Demirel, E., Bozkurt, B., Serra, X. (2018). Automatic Makam Recognition using Chroma Features.for conference Folk Music Analysis 2018 (FMA)
+
    
