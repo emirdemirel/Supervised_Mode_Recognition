@@ -5,13 +5,23 @@ from modeUtils.utilities import readDataset, generateCSV, get_args_pickle2CSV
 
 def main(filename, region, combined):
     
-    dataDir = 'data/'
-    modality = filename.split('trad')[0].split('for')[1]
-    dataSet, modalitySet = readDataset(dataDir,filename, modality, region)   
-    print('Modality types in this dataset:  \n')
-    print(modalitySet) 
     
-    generateCSV(dataDir,dataSet,region, modality, combined)
+    mode = filename.split('trad')[0].split('for')[1]
+    print(mode)
+    if mode == 'Makam':
+        dataDir = 'data/Turkish/'
+    elif mode == 'Rag':
+        dataDir = 'data/Hindustani/'
+    elif mode == 'Raaga':
+        dataDir = 'data/Carnatic/'    
+    
+    
+    dataSet, modeSet = readDataset(dataDir,filename, mode, region)
+    
+    print('Mode types in this dataset:  \n')
+    print(modeSet) 
+    
+    generateCSV(dataDir,dataSet,region, mode, combined)
 
 if __name__ == "__main__":
     
