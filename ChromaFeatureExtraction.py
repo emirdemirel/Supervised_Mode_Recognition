@@ -7,30 +7,32 @@ def main(MusicTradition, numBins, dataDir):
     
     if MusicTradition == 'TurkishClassicalMusic':
 
-        ### THE MODALITY CONCEPT IN TURKISH CLASSICAL MUSIC TRADITION
-        modality = 'makam'
+        ### THE mode CONCEPT IN TURKISH CLASSICAL MUSIC TRADITION
+        mode = 'Makam'
      
         annotationsFile = 'annotations.json'
 
     elif MusicTradition == 'HindustaniClassicalMusic':
 
-        ### THE MODALITY CONCEPT IN HINDUSTANI CLASSICAL MUSIC TRADITION
-        modality = 'rag'
+        ### THE mode CONCEPT IN HINDUSTANI CLASSICAL MUSIC TRADITION
+        mode = 'Rag'
+        annotationsFile = 'annotations_hindustani.json'
 
     elif MusicTradition == 'CarnaticClassicalMusic':
 
-        ### THE MODALITY CONCEPT IN CARNATIC CLASSICAL MUSIC TRADITION
-        modality = 'raaga'    
+        ### THE mode CONCEPT IN CARNATIC CLASSICAL MUSIC TRADITION
+        mode = 'Raaga'    
+        annotationsFile = 'annotations_carnatic.json'
 
     elif MusicTradition == 'Jazz':
 
-        ### THE MODALITY CONCEPT IN JAZZ TRADITION
-        modality = 'chordscale'
+        ### THE mode CONCEPT IN JAZZ TRADITION
+        mode = 'ChordScale'
 
     elif MusicTradition == 'ArabAndalusianMusic':
 
-        ### THE MODALITY CONCEPT IN ARAB-ANDALUSIAN MUSIC TRADITION
-        modality = 'tab'   
+        ### THE mode CONCEPT IN ARAB-ANDALUSIAN MUSIC TRADITION
+        mode = 'Tab'   
         annotationsFile = 'dataset_77_tab_tonic.json'
         ### dataDir :THE DIRECTORY OF THE AUDIO FILES
 
@@ -41,15 +43,15 @@ def main(MusicTradition, numBins, dataDir):
     with open(dataDir + annotationsFile) as json_data:
         collectionFiles = json.load(json_data)
 
-    dataList, modalityCategories = createDataStructure(dataDir, collectionFiles, numBins, modality)
+    dataList, modeCategories = createDataStructure(dataDir, collectionFiles, numBins, mode)
     
-    print('Modality categories in the dataset : \n')
-    print(modalityCategories, '\n')
+    print('mode categories in the dataset : \n')
+    print(modeCategories, '\n')
 
     print('Number of Categories in the dataset')
-    print(len(modalityCategories))
+    print(len(modeCategories))
     
-    dataslist = FeatureExtraction(outputDir,dataDir,dataList,modality)
+    dataslist = FeatureExtraction(outputDir,dataDir,dataList,mode)
     
 #####################################################
     
