@@ -2,7 +2,7 @@
 
 # 
     
-#### This repository is a demonstration for classifying audio files based on the tonal concept of 'harmonic modes' in Musicology. The concept of 'harmonic modes' exists in various tonal music traditions around the world with distinct alterations. In this project, we apply chroma based supervised mode recognition in the multi-cultural context. The evaluation of algorithms are designed to be performed on the Ottoman-Turkish, Hindustani and Carnatic datasets that were built within the scope of CompMusic Project
+ This repository is a demonstration for a audio classification methodology based on the tonal concept of 'harmonic modes' in Musicology. The concept of 'harmonic modes' exists in various tonal music traditions around the world with distinct alterations. In this project, we apply chroma based supervised mode recognition in the multi-cultural context. The evaluation of algorithms are designed to be performed on the Ottoman-Turkish, Hindustani and Carnatic datasets that were built within the scope of CompMusic Project
     
     There are 2 main steps for the audio classification: Feature Extraction and Classification. 
    
@@ -13,13 +13,13 @@
    1) Install docker-compose
    Follow [instructions](https://docs.docker.com/compose/install/).
 
-   #### Windows
+   **Windows**
     https://docs.docker.com/docker-for-windows/install/
 
-   #### Mac
+   **Mac**
     https://docs.docker.com/docker-for-mac/install/
 
-   #### Ubuntu
+   **Ubuntu**
     https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce
 
 
