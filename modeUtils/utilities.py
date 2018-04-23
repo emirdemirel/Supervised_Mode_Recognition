@@ -109,7 +109,7 @@ def downloadDataset(annotationsFile, dataDir):
                 for file in set(os.listdir(dataDir+mode)):
                     fileset.append(file.split('.')[0])
                 fileset=set(fileset)
-                print('Downloading recording : ')
+                #print('Downloading recording : ')
                 if not musicbrainzid in fileset:
                     contents = dunya.docserver.get_mp3(musicbrainzid)
                     name = "%s.mp3" % (musicbrainzid)
