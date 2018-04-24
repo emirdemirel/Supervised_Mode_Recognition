@@ -87,7 +87,7 @@ def downloadDataset(annotationsFile, dataDir):
     if os.path.exists(dataDir)!=1:         #In case of the directory already exists
         os.mkdir(dataDir)
     
-    with open(dataDir+annotationsFile) as json_data: ##ninemakams.json is specific for the case
+    with open(dataDir+annotationsFile) as json_data: 
         collectionFiles = json.load(json_data)
     #print(collectionFiles)    
     modes=set()
@@ -114,7 +114,7 @@ def downloadDataset(annotationsFile, dataDir):
                     contents = dunya.docserver.get_mp3(musicbrainzid)
                     name = "%s.mp3" % (musicbrainzid)
                     path = os.path.join(dataDir+mode+'/', name)
-                    print(name)
+                    #print(name)
                     open(path, "wb").write(contents)            
 
     print('Dataset downloaded and created in ' + dataDir + ' folder')    
