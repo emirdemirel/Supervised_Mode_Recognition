@@ -29,7 +29,7 @@ def main(filename, region, mode):
 
     modeSet = sorted(modeSet)
     print(modeSet)
-    plot_confusion_matrix(cm,modeSet,normalize=False)
+    plot_confusion_matrix(cm,modeSet,dataDir,normalize=False)
     
     
 if __name__ == "__main__":
