@@ -641,8 +641,9 @@ def machineLearning(targetDir, X, Y, attribute, numBin):
         scorefile.write(str(ac))
     return cm, f_measures, accuracies
 
+############ PLOTTING ##############################
 
-def plot_confusion_matrix(cm, classes,
+def plot_confusion_matrix(cm, classes,outputDir,
                           normalize=False,
                           title='Confusion matrix',
                           cmap=plt.cm.Blues):
@@ -676,6 +677,7 @@ def plot_confusion_matrix(cm, classes,
     plt.tight_layout()
     plt.ylabel('True label', fontsize=24)
     plt.xlabel('Predicted label', fontsize=24)
-    plt.show()
+    plt.savefig(os.path.join(outputDir,'confusionMatrix.png'))
+    plt.show
     
 #-------------------------------------------- END OF UTILITIES ---------------------------------------------#
