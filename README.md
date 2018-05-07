@@ -4,7 +4,9 @@
 
 # 
     
- This repository is a demonstration for a audio classification methodology based on the tonal concept of 'harmonic modes' in Musicology. The concept of 'harmonic modes' exists in various tonal music traditions around the world with distinct alterations. In this project, we apply chroma based supervised mode recognition in the multi-cultural context. The evaluation of algorithms are designed to be performed on the Ottoman-Turkish, Hindustani and Carnatic datasets that were built within the scope of CompMusic Project
+ This repository is a demonstration for a audio classification methodology based on the tonal concept of 'harmonic modes' in Musicology. The concept of 'harmonic modes' exists in various tonal music traditions around the world with distinct alterations. In this project, we apply chroma based supervised mode recognition in the multi-cultural context. The evaluation of algorithms are designed to be performed on the Ottoman-Turkish, Hindustani and Carnatic datasets that were built within the scope of CompMusic Project.
+ 
+  -  Please cite the reference [1] if you use the content of this repository in your work.
     
    
   Installation
@@ -47,5 +49,6 @@
 -------
 
  [1] Demirel, E., Bozkurt, B., Serra, X. (2018). Automatic Makam Recognition using Chroma Features.for conference Folk Music Analysis 2018 (FMA)
+ https://zenodo.org/record/1239435#.WulmO3VMSfg
 
    [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-ff69b4.svg)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
