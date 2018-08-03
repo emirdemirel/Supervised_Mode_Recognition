@@ -39,7 +39,9 @@
      
    Then access localhost:8888 on your browser and when asked for a password use 'mir'.
      
-   4) Open the Jupyter notebook  'Chroma-based_ModeRecognition_in_Multi-culturalContext.ipynb' for the implementation of the work presented in paper [1].
+   4) Open the Jupyter notebook  'Chroma-based_ModeRecognition_in_Multi-culturalContext.ipynb' for the DEMO of the work presented in paper [1].
+   
+   5) In the second step of the DEMO file, you can also apply 'Automatic Mode Recognition' on a single file, using the classifier model explained in the paper, trained on the full dataset. 
 
    
    Authors
