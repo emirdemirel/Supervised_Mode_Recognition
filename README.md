@@ -8,7 +8,7 @@
  
   -  Please cite the reference below if you use the content of this repository in your work.
   
-  >  [1] Demirel, E., Bozkurt, B., Serra, X. (2018). Automatic Makam Recognition using Chroma Features.for conference Folk Music Analysis 2018 (FMA)
+  >  [1] Demirel, E., Bozkurt, B., Serra, X. (2018). Automatic Makam Recognition using Chroma Features, in proceedings of  Folk Music Analysis 2018 (FMA)
  https://zenodo.org/record/1239435#.WulmO3VMSfg
     
    
