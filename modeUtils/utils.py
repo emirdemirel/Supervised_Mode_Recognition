@@ -89,6 +89,7 @@ def GenerateCSVFile(Collection, featureSet):
 
     DataList4CSV = []        
     #FIELDNAMES
+    
     fieldnames = ['MBIDs']
     for features in featureSet:
         for i in range(numBins):
@@ -96,7 +97,7 @@ def GenerateCSVFile(Collection, featureSet):
     classLabel = Collection.mode + 'Type(Class)'        
     fieldnames.append(classLabel)
     DataList4CSV.append(fieldnames)
-        
+    
     for recording in Collection.recordings: 
         recording_data = [recording.mbid] 
         if 'chroma_mean' in featureSet:
@@ -114,6 +115,8 @@ def GenerateCSVFile(Collection, featureSet):
                 
         recording_data.append(recording.modeClass)  # append mode types for classification  
         DataList4CSV.append(recording_data)
+    
+    DataList4CSV[1:].sort(key = lambda x: x[-1])
     
     with open(Collection.path + 'FeatureData_w_' + str(numBins) + 'ChromaBins.csv','w') as csvfile:
         writer = csv.writer(csvfile)
@@ -196,6 +199,45 @@ def MachineLearningPipeline(SupervisedLearning):
     return True  
 
 ###############
+
+def plot_confusion_matrix(cm, classes,
+                          normalize=False,
+                          title='Confusion matrix',
+                          cmap=plt.cm.Blues):
+    """
+    This function prints and plots the confusion matrix.
+    Normalization can be applied by setting `normalize=True`.
+    """
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        print("Normalized confusion matrix")
+    else:
+        print('Confusion matrix, without normalization')
+    classes = sorted(classes)
+    # print(cm)
+    plt.figure(figsize=(10, 14))
+    plt.imshow(cm, interpolation='nearest', cmap=cmap, aspect='auto')
+    plt.title(title, fontsize=26)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=90)
+    plt.yticks(tick_marks, classes)
+    plt.tick_params(labelsize=20)
+
+    fmt = '.2f' if normalize else 'd'
+    thresh = cm.max() / 2.
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, format(cm[i, j], fmt),
+                 horizontalalignment="center",
+                 color="white" if cm[i, j] > thresh else "black", size=20)
+
+    plt.tight_layout()
+    plt.ylabel('True label', fontsize=24)
+    plt.xlabel('Predicted label', fontsize=24)
+    plt.show()
+
+
+###############
              
 def TrainClassifier(SupervisedLearning):    
     
@@ -218,7 +260,7 @@ def TrainClassifier(SupervisedLearning):
 def DetectTonicLastNote(Recording):
     
     extractor = PredominantMelodyMakam(filter_pitch=False)
-    pitch_hz = extractor.run(Recording.mbid + '.mp3')['pitch']
+    pitch_hz = extractor.run(Recording.path)['pitch']
     pitch_filter = PitchFilter()
     pitch_hz = pitch_filter.run(pitch_hz)
 
@@ -226,7 +268,7 @@ def DetectTonicLastNote(Recording):
     tonic, _, _, _ = tonic_identifier.identify(pitch_hz)
     Recording.tonic = tonic['value']
 
-def PredictMakam_Recording(SupervisedLearning, Recording,Params):
+def PredictMode_Recording(SupervisedLearning, Recording,Params):
     
     Recording.extract_features(Params)
     Recording.extract_local_features(Params)
