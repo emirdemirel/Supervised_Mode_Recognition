@@ -238,6 +238,7 @@ class SupervisedLearning(object):
                  feature_set = None,
                  features = None,
                  classes = None,
+                 classTypes = None,
                  scores_fMeasure = None,
                  scores_accuracy = None,
                  confusion_matrix = None):
@@ -245,6 +246,7 @@ class SupervisedLearning(object):
         self.feature_set = feature_set
         self.features = features
         self.classes = classes
+        self.classTypes = classTypes
         self.scores_fMeasure = scores_fMeasure
         self.scores_accuracy = scores_accuracy
         self.confusion_matrix = confusion_matrix
@@ -263,6 +265,7 @@ class SupervisedLearning(object):
         
     def read_dataframe(self,Collection):
         self.features, self.classes = U.ReadCSVFile(Collection)
+        self.classTypes = set(self.classes)
         
     def evaluate_classifier(self):
         U.MachineLearningPipeline(self)
